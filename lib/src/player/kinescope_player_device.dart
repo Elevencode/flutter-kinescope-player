@@ -332,6 +332,32 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
             -webkit-overflow-scrolling: touch !important;
         }
         
+        /* Более агрессивные селекторы для любых всплывающих меню */
+        .kinescope-player div[role="menu"],
+        .kinescope-player div[role="listbox"],
+        .kinescope-player ul,
+        .kinescope-player ol,
+        .kinescope-player div > div[style*="position"],
+        .kinescope-player div[style*="absolute"],
+        .kinescope-player div[style*="fixed"] {
+            max-height: 60vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        
+        /* Универсальные стили для всех элементов внутри плеера с высотой > 300px */
+        .kinescope-player * {
+            box-sizing: border-box !important;
+        }
+        
+        .kinescope-player div[style*="height"] {
+            max-height: 60vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        
         .kinescope-player [class*="menu"]::-webkit-scrollbar,
         .kinescope-player [class*="dropdown"]::-webkit-scrollbar,
         .kinescope-player [class*="quality"]::-webkit-scrollbar,
@@ -439,7 +465,11 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
                              event.target.seekTo(time);
                           }
                         });
-                        player.on(player.Events.Ready, function (event) { Events.postMessage('ready'); });
+                        player.on(player.Events.Ready, function (event) { 
+                          Events.postMessage('ready');
+                          // Запускаем наблюдатель за изменениями в плеере
+                          setTimeout(observePlayerChanges, 1000);
+                        });
                         player.on(player.Events.Playing, function (event) { Events.postMessage('playing'); });
                         player.on(player.Events.Waiting, function (event) { Events.postMessage('waiting'); });
                         player.on(player.Events.Pause, function (event) { Events.postMessage('pause'); });
@@ -510,6 +540,85 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
 
         function onTimeUpdate(arg) {
           TimeUpdate.postMessage(JSON.stringify(arg.data));
+        }
+
+        // Функция для принудительного применения стилей прокрутки
+        function forceScrollableMenus() {
+          const player = document.querySelector('.kinescope-player');
+          if (!player) return;
+          
+          // Находим все возможные меню и применяем стили прокрутки
+          const selectors = [
+            'div[class*="menu"]',
+            'div[class*="dropdown"]', 
+            'div[class*="quality"]',
+            'div[class*="resolution"]',
+            'div[class*="settings"]',
+            'ul', 'ol',
+            'div[role="menu"]',
+            'div[role="listbox"]'
+          ];
+          
+          selectors.forEach(selector => {
+            const elements = player.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (el.children.length > 4 || el.scrollHeight > 300) {
+                el.style.maxHeight = '60vh';
+                el.style.overflowY = 'auto';
+                el.style.overflowX = 'hidden';
+                el.style.webkitOverflowScrolling = 'touch';
+              }
+            });
+          });
+          
+          // Особая обработка для маленьких экранов
+          if (window.innerWidth <= 480) {
+            selectors.forEach(selector => {
+              const elements = player.querySelectorAll(selector);
+              elements.forEach(el => {
+                if (el.children.length > 3 || el.scrollHeight > 250) {
+                  el.style.maxHeight = '50vh';
+                  el.style.overflowY = 'auto';
+                  el.style.overflowX = 'hidden';
+                  el.style.webkitOverflowScrolling = 'touch';
+                }
+              });
+            });
+          }
+        }
+
+        // MutationObserver для отслеживания изменений в DOM
+        function observePlayerChanges() {
+          const player = document.querySelector('.kinescope-player');
+          if (!player) {
+            setTimeout(observePlayerChanges, 500);
+            return;
+          }
+          
+          const observer = new MutationObserver(function(mutations) {
+            let shouldUpdate = false;
+            mutations.forEach(function(mutation) {
+              if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                shouldUpdate = true;
+              }
+            });
+            if (shouldUpdate) {
+              setTimeout(forceScrollableMenus, 100);
+            }
+          });
+          
+          observer.observe(player, {
+            childList: true,
+            subtree: true
+          });
+          
+          // Применяем стили сразу
+          forceScrollableMenus();
+          
+          // Добавляем обработчик кликов для принудительного применения стилей
+          player.addEventListener('click', function(e) {
+            setTimeout(forceScrollableMenus, 50);
+          });
         }
     </script>
 </head>
