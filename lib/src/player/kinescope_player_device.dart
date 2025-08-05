@@ -320,7 +320,12 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
         .kinescope-player .kinescope-player-speed-menu,
         .kinescope-player [class*="menu"],
         .kinescope-player [class*="dropdown"],
-        .kinescope-player [class*="settings"] {
+        .kinescope-player [class*="settings"],
+        .kinescope-player [class*="quality"],
+        .kinescope-player [class*="quality-menu"],
+        .kinescope-player [class*="quality-selector"],
+        .kinescope-player [class*="quality-list"],
+        .kinescope-player [class*="resolution"] {
             max-height: 60vh !important;
             overflow-y: auto !important;
             overflow-x: hidden !important;
@@ -328,17 +333,23 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
         }
         
         .kinescope-player [class*="menu"]::-webkit-scrollbar,
-        .kinescope-player [class*="dropdown"]::-webkit-scrollbar {
+        .kinescope-player [class*="dropdown"]::-webkit-scrollbar,
+        .kinescope-player [class*="quality"]::-webkit-scrollbar,
+        .kinescope-player [class*="resolution"]::-webkit-scrollbar {
             width: 4px !important;
         }
         
         .kinescope-player [class*="menu"]::-webkit-scrollbar-track,
-        .kinescope-player [class*="dropdown"]::-webkit-scrollbar-track {
+        .kinescope-player [class*="dropdown"]::-webkit-scrollbar-track,
+        .kinescope-player [class*="quality"]::-webkit-scrollbar-track,
+        .kinescope-player [class*="resolution"]::-webkit-scrollbar-track {
             background: rgba(0,0,0,0.1) !important;
         }
         
         .kinescope-player [class*="menu"]::-webkit-scrollbar-thumb,
-        .kinescope-player [class*="dropdown"]::-webkit-scrollbar-thumb {
+        .kinescope-player [class*="dropdown"]::-webkit-scrollbar-thumb,
+        .kinescope-player [class*="quality"]::-webkit-scrollbar-thumb,
+        .kinescope-player [class*="resolution"]::-webkit-scrollbar-thumb {
             background: rgba(255,255,255,0.5) !important;
             border-radius: 2px !important;
         }
@@ -346,7 +357,9 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
         @media (max-width: 480px) {
             .kinescope-player [class*="menu"] button,
             .kinescope-player [class*="dropdown"] button,
-            .kinescope-player [class*="settings"] button {
+            .kinescope-player [class*="settings"] button,
+            .kinescope-player [class*="quality"] button,
+            .kinescope-player [class*="resolution"] button {
                 min-height: 44px !important;
                 padding: 8px 12px !important;
                 font-size: 14px !important;
@@ -354,8 +367,26 @@ class _KinescopePlayerState extends State<KinescopePlayerDevice> {
             
             .kinescope-player [class*="menu"],
             .kinescope-player [class*="dropdown"],
-            .kinescope-player [class*="settings"] {
+            .kinescope-player [class*="settings"],
+            .kinescope-player [class*="quality"],
+            .kinescope-player [class*="quality-menu"],
+            .kinescope-player [class*="quality-selector"],
+            .kinescope-player [class*="quality-list"],
+            .kinescope-player [class*="resolution"] {
                 max-height: 50vh !important;
+            }
+        }
+        
+        @media (max-width: 320px) {
+            .kinescope-player [class*="menu"],
+            .kinescope-player [class*="dropdown"],
+            .kinescope-player [class*="settings"],
+            .kinescope-player [class*="quality"],
+            .kinescope-player [class*="quality-menu"],
+            .kinescope-player [class*="quality-selector"],
+            .kinescope-player [class*="quality-list"],
+            .kinescope-player [class*="resolution"] {
+                max-height: 40vh !important;
             }
         }
     </style>
